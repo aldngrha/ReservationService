@@ -14,6 +14,7 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 export default function DetailScreen({ navigation }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -30,6 +31,8 @@ export default function DetailScreen({ navigation }) {
 
   const times = ["09:00", "11:00", "13:00", "15:00"];
 
+  const slots = ["A", "B", "C", "D"];
+
   const handleOrderPress = () => {
     // Menggunakan data yang diinput untuk melakukan order
     // Misalnya, mengirim data ke backend atau menampilkan pesan konfirmasi
@@ -42,6 +45,10 @@ export default function DetailScreen({ navigation }) {
 
   const handleTimePress = (time) => {
     setSelectedTime(time);
+  };
+
+  const handleSlotPress = (slot) => {
+    setSelectedSlot(slot);
   };
 
   const renderDateItem = ({ item }) => (
@@ -76,6 +83,22 @@ export default function DetailScreen({ navigation }) {
     </TouchableOpacity>
   );
 
+  const renderSlotItem = ({ item }) => (
+    <TouchableOpacity
+      style={[styles.dateButton, item === selectedSlot && styles.selectedDate]}
+      onPress={() => handleSlotPress(item)}
+    >
+      <Text
+        style={[
+          styles.dateText,
+          item === selectedSlot && styles.selectedDateText,
+        ]}
+      >
+        {item}
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -98,10 +121,6 @@ export default function DetailScreen({ navigation }) {
         </ImageBackground>
         <View style={styles.card}>
           <View style={styles.detail}>
-            <View style={styles.detailTitle}>
-              <Text style={styles.detailTitleText}>Perbaikan Mesin</Text>
-              <Text style={styles.detailTitleText}>2 Hari</Text>
-            </View>
             <Text style={styles.h1}>Reservasi Servis</Text>
             <View style={styles.dp}>
               <Text style={styles.dpText}>Uang Muka - </Text>
@@ -119,6 +138,14 @@ export default function DetailScreen({ navigation }) {
             <FlatList
               data={times}
               renderItem={renderTimeItem}
+              keyExtractor={(item) => item}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+            <Text style={styles.h2}>Slot Tempat</Text>
+            <FlatList
+              data={slots}
+              renderItem={renderSlotItem}
               keyExtractor={(item) => item}
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -186,10 +213,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  detailTitleText: {
-    fontSize: 15,
-    fontWeight: "500",
-  },
   h1: {
     marginVertical: 20,
     fontSize: 25,
@@ -248,6 +271,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 16,
   },
 });

@@ -6,6 +6,8 @@ import LoginScreen from "./src/screens/LoginScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import DetailScreen from "./src/screens/DetailScreen";
 import CustomDrawer from "./src/components/CustomDrawer";
+import CheckoutScreen from "./src/screens/CheckoutScreen";
+import SuccessScreen from "./src/screens/SuccessScreen";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -13,7 +15,7 @@ const Drawer = createDrawerNavigator();
 function DrawerDashboard() {
   return (
     <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
-      <Drawer.Screen name="Home" component={DetailScreen} />
+      <Drawer.Screen name="Home" component={HomeScreen} />
     </Drawer.Navigator>
   );
 }
@@ -22,16 +24,16 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Detail Screen"
-          component={DetailScreen}
-          options={{ headerShown: false }}
-        />
         {/* <Stack.Screen
+          name="Detail Screen"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        /> */}
+        <Stack.Screen
           name="HomeDrawer"
           component={DrawerDashboard}
           options={{ headerShown: false }}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

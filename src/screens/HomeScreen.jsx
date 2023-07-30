@@ -29,23 +29,16 @@ export default function HomeScreen() {
           text="Tentang"
         />
       </View>
-      <Text style={styles.h1}>Lokasi</Text>
+      <Text style={styles.h1}>Lokasi Bengkel</Text>
       <MapLinkScreen />
-      <Text style={styles.h1}>Ketersediaan Tempat</Text>
-      <ScrollView horizontal>
-        <View style={styles.rowReservation}>
-          <ReservationCard
-            imageSource={require("../../assets/map.png")}
-            textLeft="Perbaikan Mesin"
-            textRight="2Hari"
-          />
-          <ReservationCard
-            imageSource={require("../../assets/map.png")}
-            textLeft="Perbaikan Kap"
-            textRight="1Hari"
-          />
-        </View>
-      </ScrollView>
+      <Text style={styles.h1}>Tempat</Text>
+      <View style={styles.rowReservation}>
+        <ReservationCard
+          imageSource={require("../../assets/map.png")}
+          textLeft="Perbaikan Kap"
+          textRight="1Hari"
+        />
+      </View>
     </SafeAreaView>
   );
 }
