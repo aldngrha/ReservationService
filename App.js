@@ -8,6 +8,7 @@ import DetailScreen from "./src/screens/DetailScreen";
 import CustomDrawer from "./src/components/CustomDrawer";
 import CheckoutScreen from "./src/screens/CheckoutScreen";
 import SuccessScreen from "./src/screens/SuccessScreen";
+import StatusScreen from "./src/screens/StatusScreen";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -24,16 +25,16 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* <Stack.Screen
-          name="Detail Screen"
-          component={HomeScreen}
-          options={{ headerShown: false }}
-        /> */}
         <Stack.Screen
+          name="Detail Screen"
+          component={CheckoutScreen}
+          options={{ headerShown: false }}
+        />
+        {/* <Stack.Screen
           name="HomeDrawer"
           component={DrawerDashboard}
           options={{ headerShown: false }}
-        />
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
