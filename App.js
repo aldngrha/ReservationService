@@ -9,9 +9,22 @@ import CustomDrawer from "./src/components/CustomDrawer";
 import CheckoutScreen from "./src/screens/CheckoutScreen";
 import SuccessScreen from "./src/screens/SuccessScreen";
 import StatusScreen from "./src/screens/StatusScreen";
+import RegisterScreen from "./src/screens/RegisterScreen";
+import { DefaultTheme, PaperProvider } from "react-native-paper";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "skyblue", // Ganti warna primer sesuai keinginan Anda
+    accent: "green", // Ganti warna aksen sesuai keinginan Anda
+    text: "black", // Ganti warna teks umum
+    placeholder: "gray", // Ganti warna placeholder
+  },
+};
 
 function DrawerDashboard() {
   return (
@@ -23,20 +36,27 @@ function DrawerDashboard() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Detail Screen"
-          component={CheckoutScreen}
-          options={{ headerShown: false }}
-        />
-        {/* <Stack.Screen
-          name="HomeDrawer"
-          component={DrawerDashboard}
-          options={{ headerShown: false }}
-        /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <PaperProvider theme={theme}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Register"
+            component={RegisterScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Dashboard"
+            component={DrawerDashboard}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
 

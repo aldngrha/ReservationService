@@ -4,45 +4,53 @@ import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { auth, database } from "../../firebase";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { ref } from "firebase/database";
+import { ref, set } from "firebase/database";
+import { useForm } from "../utils/useForm";
 
-const LoginScreen = () => {
-  const [form, setForm] = useState({
+const RegisterScreen = () => {
+  const [form, setForm] = useForm({
+    name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
-  const handleLogin = () => {
-    setIsLoading(true); // Start loading
+  const handleRegister = () => {
+    setIsLoading(true);
     auth
-      .signInWithEmailAndPassword(form.email, form.password)
+      .createUserWithEmailAndPassword(form.email, form.password)
       .then((userCredentials) => {
-        alert("Logged In With: ", userCredentials.email);
+        setForm("reset");
+        const data = {
+          fullName: form.name,
+          email: form.email,
+          phoneNumber: "",
+        };
+        const userRef = ref(database, `users/${userCredentials.user.uid}/`);
+        set(userRef, data);
         setIsLoading(false);
-        const user = ref(database, `users/${userCredentials.user.uid}`)
-          .once("value")
-          .then((resDB) => {
-            if (resDB.val()) {
-              storeData("users", resDB.val());
-              navigation.navigate("Dashboard");
-            }
-          });
+        alert("Registrasi Berhasil", userCredentials);
+        navigation.navigate("Login");
       })
       .catch((error) => {
-        alert("Email atau password salah ", error.message);
-      })
-      .finally(() => {
-        setIsLoading(false); // Stop loading
+        setIsLoading(false);
+        alert("Register gagal: " + error.message);
       });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.text}>
-        <Text style={styles.h1}>Login Form</Text>
+        <Text style={styles.h1}>Register Form</Text>
       </View>
+      <TextInput
+        label="Nama Lengkap"
+        value={form.name}
+        onChangeText={(value) => setForm("name", value)}
+        style={styles.input}
+      />
       <TextInput
         label="Email"
         value={form.email}
@@ -56,24 +64,31 @@ const LoginScreen = () => {
         onChangeText={(value) => setForm("password", value)}
         style={styles.input}
       />
+      <TextInput
+        label="Confirm Password"
+        secureTextEntry
+        value={form.confirmPassword}
+        onChangeText={(value) => setForm("confirmPassword", value)}
+        style={styles.input}
+      />
       <Button
         mode="contained"
         style={[styles.button, isLoading && styles.buttonLoading]}
-        onPress={handleLogin}
+        onPress={handleRegister}
         disabled={isLoading} // Menonaktifkan tombol jika loading sedang berjalan
       >
         {isLoading ? (
           <ActivityIndicator color="white" size="small" /> // Menampilkan indikator loading jika isLoading true
         ) : (
-          "Login"
+          "Register"
         )}
       </Button>
       <Button
         mode="outlined"
         style={styles.button}
-        onPress={() => navigation.navigate("Register")}
+        onPress={() => navigation.navigate("Login")}
       >
-        Register
+        Login
       </Button>
     </SafeAreaView>
   );
@@ -110,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;
