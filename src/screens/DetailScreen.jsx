@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,6 +12,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { InteractionManager } from "react-native";
+import { database } from "../../firebase";
+import { onValue, ref } from "firebase/database";
 
 export default function DetailScreen() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -20,22 +22,71 @@ export default function DetailScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [dates, setDates] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [times, setTimes] = useState([]);
 
   const navigation = useNavigation();
 
-  const dates = [
-    "2023-07-16",
-    "2023-07-17",
-    "2023-07-18",
-    "2023-07-19",
-    "2023-07-20",
-    "2023-07-21",
-    "2023-07-22",
-  ];
+  useEffect(() => {
+    const fetchData = () => {
+      const roomRef = ref(database, "rooms");
+      onValue(roomRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const newData = Object.keys(data).map((key) => ({
+            key: key, // Menambahkan kunci unik ke dalam objek data
+            tempat: data[key].tempat,
+          }));
+          // Filter unique items based on 'tempat'
+          const uniqueData = newData.filter(
+            (item, index, self) =>
+              index === self.findIndex((t) => t.tempat === item.tempat)
+          );
+          setRooms(uniqueData);
+        }
+      });
 
-  const times = ["09:00", "11:00", "13:00", "15:00"];
+      const timeRef = ref(database, "times");
+      onValue(timeRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const newData = Object.keys(data).map((key) => ({
+            key: key, // Menambahkan kunci unik ke dalam objek data
+            waktu: data[key].waktu,
+          }));
+          // Filter unique items based on 'tempat'
+          const uniqueData = newData.filter(
+            (item, index, self) =>
+              index === self.findIndex((t) => t.waktu === item.waktu)
+          );
+          setTimes(uniqueData);
+        }
+      });
 
-  const slots = ["A", "B", "C", "D"];
+      const datesRef = ref(database, "dates");
+      onValue(datesRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const newData = Object.keys(data).map((key) => ({
+            key: key, // Menambahkan kunci unik ke dalam objek data
+            tanggal: data[key].tanggal,
+          }));
+          // Filter unique items based on 'tempat'
+          const uniqueData = newData.filter(
+            (item, index, self) =>
+              index === self.findIndex((t) => t.dates === item.dates)
+          );
+          setDates(uniqueData);
+        }
+      });
+    };
+    fetchData();
+  }, []);
+
+  console.log(dates);
+  console.log(times);
+  console.log(rooms);
 
   const handleOrderPress = () => {
     // Menggunakan data yang diinput untuk melakukan order
@@ -66,7 +117,7 @@ export default function DetailScreen() {
           item === selectedDate && styles.selectedDateText,
         ]}
       >
-        {item}
+        {item.tanggal}
       </Text>
     </TouchableOpacity>
   );
@@ -82,7 +133,7 @@ export default function DetailScreen() {
           item === selectedTime && styles.selectedDateText,
         ]}
       >
-        {item}
+        {item.waktu}
       </Text>
     </TouchableOpacity>
   );
@@ -98,7 +149,7 @@ export default function DetailScreen() {
           item === selectedSlot && styles.selectedDateText,
         ]}
       >
-        {item}
+        {item.tempat}
       </Text>
     </TouchableOpacity>
   );
@@ -154,9 +205,9 @@ export default function DetailScreen() {
             />
             <Text style={styles.h2}>Slot Tempat</Text>
             <FlatList
-              data={slots}
+              data={rooms}
               renderItem={renderSlotItem}
-              keyExtractor={(item) => item}
+              keyExtractor={(item) => item.key}
               horizontal
               showsHorizontalScrollIndicator={false}
             />
