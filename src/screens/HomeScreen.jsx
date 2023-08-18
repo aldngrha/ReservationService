@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,12 +11,35 @@ import { Entypo } from "@expo/vector-icons";
 import Card from "../components/Card";
 import MapLinkScreen from "../components/MapLink";
 import ReservationCard from "../components/ReservationCard";
-import { ScrollView } from "react-native-gesture-handler";
+import { auth, database } from "../../firebase";
+import { onValue, ref } from "firebase/database";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
+  const [userData, setUserData] = useState(null);
+  const navigation = useNavigation();
+
+  // Misalnya pada komponen Dashboard
+  useEffect(() => {
+    // Mendapatkan referensi ke data pengguna dari database
+    const userRef = ref(database, `users/${auth.currentUser.uid}`);
+
+    // Menggunakan onValue untuk mendapatkan data secara real-time
+    onValue(userRef, (snapshot) => {
+      const userData = snapshot.val();
+      if (userData) {
+        setUserData(userData);
+      }
+    });
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.h2}>Halo, Nana!</Text>
+      {userData ? (
+        <Text style={styles.h2}>Halo, {userData.fullName}!</Text>
+      ) : (
+        <Text style={styles.h2}>Loading...</Text>
+      )}
       <View style={styles.row}>
         <Card
           color="salmon"
@@ -35,8 +58,7 @@ export default function HomeScreen() {
       <View style={styles.rowReservation}>
         <ReservationCard
           imageSource={require("../../assets/map.png")}
-          textLeft="Perbaikan Kap"
-          textRight="1Hari"
+          onClick={() => navigation.navigate("Detail")}
         />
       </View>
     </SafeAreaView>
@@ -48,7 +70,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fafafa",
     paddingHorizontal: 17,
-    marginTop: -10,
   },
   h1: {
     fontSize: 23,
@@ -58,7 +79,7 @@ const styles = StyleSheet.create({
   h2: {
     fontSize: 17,
     fontWeight: "600",
-    marginBottom: 20,
+    marginVertical: 20,
   },
   row: {
     flexDirection: "row",

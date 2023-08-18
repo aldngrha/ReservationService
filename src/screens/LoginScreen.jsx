@@ -1,37 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { TextInput, Button, ActivityIndicator } from "react-native-paper";
-import { auth, database } from "../../firebase";
+import { auth } from "../../firebase";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { ref } from "firebase/database";
+import { useForm } from "../utils/useForm";
+import { ref, once } from "firebase/database";
 
 const LoginScreen = () => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useForm({
     email: "",
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate("Dashboard");
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
   const handleLogin = () => {
     setIsLoading(true); // Start loading
     auth
       .signInWithEmailAndPassword(form.email, form.password)
       .then((userCredentials) => {
-        alert("Logged In With: ", userCredentials.email);
+        alert("Berhasil login");
         setIsLoading(false);
-        const user = ref(database, `users/${userCredentials.user.uid}`)
-          .once("value")
-          .then((resDB) => {
-            if (resDB.val()) {
-              storeData("users", resDB.val());
-              navigation.navigate("Dashboard");
-            }
-          });
+
+        navigation.navigate("Dashboard");
       })
       .catch((error) => {
-        alert("Email atau password salah ", error.message);
+        alert("Email atau password salah", error);
+        console.log(error);
       })
       .finally(() => {
         setIsLoading(false); // Stop loading

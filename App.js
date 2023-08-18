@@ -40,18 +40,23 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            name="Register"
-            component={RegisterScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
             name="Login"
             component={LoginScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
+            name="Register"
+            component={RegisterScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
             name="Dashboard"
             component={DrawerDashboard}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Detail"
+            component={DetailScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

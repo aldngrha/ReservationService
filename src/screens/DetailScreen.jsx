@@ -10,14 +10,18 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
+import { InteractionManager } from "react-native";
 
-export default function DetailScreen({ navigation }) {
+export default function DetailScreen() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  const navigation = useNavigation();
 
   const dates = [
     "2023-07-16",
@@ -113,7 +117,13 @@ export default function DetailScreen({ navigation }) {
         >
           <View style={styles.overlay}>
             <View style={styles.arrowContainer}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
+              <TouchableOpacity
+                onPress={() =>
+                  InteractionManager.runAfterInteractions(() => {
+                    navigation.goBack();
+                  })
+                }
+              >
                 <Ionicons name="arrow-back" size={30} />
               </TouchableOpacity>
             </View>

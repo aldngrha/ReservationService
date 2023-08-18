@@ -1,11 +1,12 @@
 import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-export default function ReservationCard({ imageSource, textLeft, textRight }) {
+export default function ReservationCard({ imageSource, onClick }) {
   return (
-    <View style={styles.cardContainer}>
+    <TouchableOpacity style={styles.cardContainer} onPress={onClick}>
       <Image source={imageSource} style={styles.image} resizeMode="cover" />
-    </View>
+    </TouchableOpacity>
   );
 }
 

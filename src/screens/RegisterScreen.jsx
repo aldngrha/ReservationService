@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { ref, set } from "firebase/database";
 import { useForm } from "../utils/useForm";
+import { storeData } from "../utils/localStorage";
 
 const RegisterScreen = () => {
   const [form, setForm] = useForm({
@@ -13,6 +14,7 @@ const RegisterScreen = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "user",
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
@@ -27,6 +29,7 @@ const RegisterScreen = () => {
           fullName: form.name,
           email: form.email,
           phoneNumber: "",
+          role: form.role,
         };
         const userRef = ref(database, `users/${userCredentials.user.uid}/`);
         set(userRef, data);
